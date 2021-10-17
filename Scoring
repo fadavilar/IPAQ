@@ -1,0 +1,18 @@
+#Ver más en: 
+##http://www.sdp.univ.fvg.it/sites/default/files/IPAQ_English_self-admin_long.pdf
+##https://lcbc-uio.github.io/Questionnaires/articles/ipaq.html
+
+###Del dataframe 'actividad', se transforman las preguntas a mets mediante Ejercicio_Días/mes * Ejercicio_Minutos/día * K
+###para ver constantes de K por nivel de intensidad de actividad ver https://www.physio-pedia.com/images/c/c7/Quidelines_for_interpreting_the_IPAQ.pdf
+
+mets_IPAQ=actividad
+mets_IPAQ['intenso']=(mets_IPAQ['Ejercicio intenso_Días/mes']*mets_IPAQ['Ejercicio intenso_Minutos/día']*8).fillna(0)
+mets_IPAQ['moderado']=(mets_IPAQ['Ejercicio moderado_Días/mes']*mets_IPAQ['Ejercicio moderado_Minutos/día']*4).fillna(0)
+mets_IPAQ['leve']=(mets_IPAQ['Actividad leve_Días/mes']*mets_IPAQ['Actividad leve_Minutos/día']*3.3).fillna(0)
+mets_IPAQ['total']=mets_IPAQ['intenso'] + mets_IPAQ['moderado'] + mets_IPAQ['leve']
+
+bins = [0, 400, 1300,10000]
+category = ['Leve', 'Moderado', 'Intenso']
+mets_IPAQ['Nivel de actividad'] = pd.cut(mets_IPAQ['total'], bins, labels=category)
+
+mets_IPAQ.head()
